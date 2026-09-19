@@ -9,8 +9,8 @@
   "theme_color": "#050813",
   "icons": [
     {
-      "src": "assets/ships/SpaceShip_0.png",
-      "sizes": "300x300",
+      "src": "assets/ic_launcher.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
