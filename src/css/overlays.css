@@ -673,3 +673,95 @@
   font-size: 0.78rem;
   line-height: 1.55;
 }
+
+/* Boot Splash Screen */
+#bootSplash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: radial-gradient(circle at 50% 45%, #081226 0%, #030612 85%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: auto;
+}
+
+#bootSplash.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bootContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.bootShip {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  animation: float 2.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(94, 234, 255, 0.65));
+}
+
+.bootTitle {
+  font: 900 clamp(2.2rem, 9vw, 3.4rem)/1 Orbitron, sans-serif;
+  color: #fff;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 24px rgba(94, 234, 255, 0.5);
+  transform: skewX(-4deg);
+}
+
+.bootTitle b {
+  color: var(--cyan);
+}
+
+.bootSub {
+  font: 700 0.62rem Orbitron, sans-serif;
+  color: var(--amber);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(255, 180, 84, 0.4);
+}
+
+.bootBar {
+  width: 150px;
+  height: 4px;
+  background: rgba(94, 234, 255, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  margin-top: 8px;
+}
+
+.bootFill {
+  width: 45%;
+  height: 100%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+  animation: bootLoad 1.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px;
+}
+
+@keyframes bootLoad {
+  0% { transform: translateX(-120%); }
+  50% { transform: translateX(80%); }
+  100% { transform: translateX(260%); }
+}
+
+/* Thumb-friendly sub-menu bottom back buttons */
+.subBackBtn {
+  width: 100%;
+  max-width: 320px;
+  margin-top: 14px;
+  padding: 13px 20px;
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  border-color: rgba(94, 234, 255, 0.35);
+}
+

@@ -221,6 +221,13 @@ function endLaunch() {
   G.flash = 0.3;
   ensureSpawns(viewport.W, viewport.H);
   hud.setVisible(true);
+  const touchGuide = document.getElementById('touchZonesGuide');
+  if (touchGuide) {
+    touchGuide.classList.remove('fade-out');
+    setTimeout(() => {
+      touchGuide.classList.add('fade-out');
+    }, 5500);
+  }
   sfx('boost');
 }
 
@@ -500,6 +507,15 @@ loadGameAssets().then(() => {
   menu.buildShipSel();
   window.__assetsLoaded = true;
   console.log('Space Drift assets ready for gameplay & hangar.');
+  
+  // Smoothly dismiss boot splash screen
+  const splash = document.getElementById('bootSplash');
+  if (splash) {
+    splash.classList.add('fade-out');
+    setTimeout(() => {
+      if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+    }, 550);
+  }
 });
 
 // Start Game Loop
@@ -515,6 +531,52 @@ const loop = createGameLoop({
 loop.start();
 window.__gameReady = true;
 
+// Smart Back Navigation System (Android Native & Web Popstate Bridge)
+window.__handleBackPress = () => {
+  // 1. If pause menu is open -> unpause / resume
+  if (G.state === 'pause') {
+    togglePause();
+    return 'handled';
+  }
+  // 2. If game over or win screen is open -> return to menu
+  if (G.state === 'over' || G.state === 'win') {
+    toMenu();
+    return 'handled';
+  }
+  // 3. If in menu state: if inside sub-menu (hangar/tut/profile), go back to main menu; otherwise exit confirmation
+  if (G.state === 'menu') {
+    if (menu.handleBackPress()) {
+      return 'handled';
+    }
+    return 'exit';
+  }
+  // 4. If currently playing or launching -> pause the game safely
+  if (G.state === 'play' || G.state === 'launch') {
+    togglePause();
+    return 'handled';
+  }
+  return 'exit';
+};
+
+// Web browser back button integration (popstate)
+try {
+  window.history.pushState({ page: 'spacedrift' }, '');
+  window.addEventListener('popstate', () => {
+    const res = window.__handleBackPress();
+    if (res !== 'exit') {
+      window.history.pushState({ page: 'spacedrift' }, '');
+    }
+  });
+} catch (e) {}
+
+// Physical keyboard Escape/Backspace navigation fallback
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape' || e.key === 'Backspace') {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+    window.__handleBackPress();
+  }
+});
+
 // Unlock AudioContext and start background music on first user gesture
 const unlockAudioOnGesture = () => {
   initAudio();
@@ -526,4 +588,5 @@ window.addEventListener('pointerdown', unlockAudioOnGesture, { once: true });
 window.addEventListener('keydown', unlockAudioOnGesture, { once: true });
 
 console.log('Space Drift Modular Engine v3.6 initialized successfully.');
+
 

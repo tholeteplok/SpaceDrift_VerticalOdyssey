@@ -17,6 +17,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.webkit.WebViewAssetLoader;
@@ -122,11 +123,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private long lastBackPressTime = 0;
+
     @Override
     public void onBackPressed() {
         if (webView != null) {
-            // Trigger pause or menu via JavaScript event in game
-            webView.evaluateJavascript("if (window.eventBus) window.eventBus.emit('togglePause');", null);
+            // Evaluate game back navigation handler in JavaScript
+            webView.evaluateJavascript(
+                "(function() { return (typeof window.__handleBackPress === 'function') ? window.__handleBackPress() : 'default'; })()",
+                result -> {
+                    // Result is returned as JSON string e.g. "\"exit\""
+                    if ("\"exit\"".equals(result)) {
+                        long now = System.currentTimeMillis();
+                        if (now - lastBackPressTime < 2000) {
+                            finish();
+                        } else {
+                            lastBackPressTime = now;
+                            Toast.makeText(MainActivity.this, "Tekan sekali lagi untuk keluar", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            );
         } else {
             super.onBackPressed();
         }

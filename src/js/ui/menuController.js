@@ -22,11 +22,14 @@ export function createMenuController(profileController) {
   const shipPerk = $('shipPerk');
   const bestLabel = $('bestLabel');
 
+  let activePage = 'pgMain';
+
   function show(el, on) {
     if (el) el.classList.toggle('hidden', !on);
   }
 
   function showPage(id, silent = false) {
+    activePage = id;
     show($('pgMain'), id === 'pgMain');
     show($('pgHangar'), id === 'pgHangar');
     show($('pgTut'), id === 'pgTut');
@@ -36,6 +39,14 @@ export function createMenuController(profileController) {
       profileController.refreshProfile();
     }
     if (!silent) sfx('ui');
+  }
+
+  function handleBackPress() {
+    if (activePage !== 'pgMain') {
+      showPage('pgMain');
+      return true;
+    }
+    return false;
   }
 
   function drawShipPreview(cnv, s) {
@@ -141,8 +152,11 @@ export function createMenuController(profileController) {
     bindTap($('btnTut'), () => showPage('pgTut'));
     bindTap($('btnProfile'), () => showPage('pgProfile'));
     bindTap($('btnBackH'), () => showPage('pgMain'));
+    bindTap($('btnBackH2'), () => showPage('pgMain'));
     bindTap($('btnBackT'), () => showPage('pgMain'));
+    bindTap($('btnBackT2'), () => showPage('pgMain'));
     bindTap($('btnBackP'), () => showPage('pgMain'));
+    bindTap($('btnBackP2'), () => showPage('pgMain'));
     bindTap($('btnRetry'), () => eventBus.emit('startGame'));
     bindTap($('btnRestart2'), () => eventBus.emit('startGame'));
     bindTap($('btnRetry2'), () => eventBus.emit('startGame'));
@@ -267,6 +281,8 @@ export function createMenuController(profileController) {
     showWin,
     hideAllOverlays,
     showMenuOverlay,
-    setPauseOverlay
+    setPauseOverlay,
+    handleBackPress,
+    getActivePage: () => activePage
   };
 }
