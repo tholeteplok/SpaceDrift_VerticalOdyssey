@@ -30,3 +30,12 @@ google-services.json
 
 # Dependency Directories
 node_modules/
+
+# Android Build & Local Config
+.gradle/
+build/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/app/src/main/assets/
