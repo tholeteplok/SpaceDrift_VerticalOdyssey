@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+  <meta name="theme-color" content="#030612"/>
+  <title>SPACE DRIFT — Vertical Odyssey II</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/hud.css">
+  <link rel="stylesheet" href="css/overlays.css">
+</head>
+<body>
+  <canvas id="cv"></canvas>
+  <div id="vig"></div>
+
+  <!-- HUD In-Game -->
+  <div id="hud" class="hidden">
+    <div id="hudTop">
+      <div>
+        <div id="pilotTag">PILOT-01</div>
+        <div class="lab">KETINGGIAN</div>
+        <div id="alt">0<small> m</small></div>
+        <div id="vel">0 m/s</div>
+        <div id="bestIn">REKOR 0 m</div>
+        <div id="lvlBox">
+          <span id="lvl">LEVEL 1/10</span>
+          <div id="stageName">ORBIT BIRU</div>
+          <div class="lvlBar"><div id="lvlFill"></div></div>
+        </div>
+      </div>
+      <div id="hearts"></div>
+      <div id="radBox">
+        <div class="rl">☢ RADIASI</div>
+        <div class="radBar"><div id="radFill"></div></div>
+      </div>
+      <div id="rightBox">
+        <button id="btnPause">❚❚</button>
+        <div class="lab">SKOR</div>
+        <div id="score">0</div>
+      </div>
+    </div>
+    <div id="hudBot">
+      <div id="laserBox">
+        <div class="ll">🔫 <span id="laserName">PULSE</span></div>
+        <div class="lasBar"><div id="laserFill"></div></div>
+      </div>
+      <div id="energyWrap">
+        <div id="energyFill"></div>
+        <div id="energyTxt">⚡ 100</div>
+      </div>
+      <div id="hint">KIRI/KANAN: tahan = geser · ketuk = dodge · TENGAH: tahan = dorong ▲ · ketuk 2× = BOOST ⚡</div>
+    </div>
+  </div>
+
+  <div id="comboTag"></div>
+  <div id="zoneBanner"><h3></h3><p></p></div>
+  <div id="errBox"></div>
+
+  <!-- Menu Utama & Halaman (4 Halaman) -->
+  <div id="menu" class="overlay">
+
+    <!-- Halaman 1: Main Menu -->
+    <div id="pgMain" class="mpage">
+      <div class="strip">
+        <span>🚀</span><span>⭐</span><span class="ctl">◀</span><span class="ctl">▲</span>
+        <span class="bolt">⚡</span><span class="ctl">▶</span>
+        <span>⭐</span><span>🚀</span>
+      </div>
+      <h1 class="logo">SPACE<b>DRIFT</b></h1>
+      <div class="sub">Vertical Odyssey · II</div>
+      <div class="chip gold">🚀 10 LEVEL — tiap level punya latar & kesulitan berbeda (+10%)</div>
+      <button id="btnStart" class="btn start">MULAI MISI 🚀</button>
+      <div class="menuBtns">
+        <button id="btnHangar" class="btn ghost menuBtn">🛠 HANGAR</button>
+        <button id="btnTut" class="btn ghost menuBtn">📖 TUTORIAL</button>
+        <button id="btnProfile" class="btn ghost menuBtn">👤 PROFIL</button>
+      </div>
+      <div class="tap-hint">— animasi lepas landas dari Bumi · ketuk di mana saja untuk mulai —</div>
+      <div class="menu-foot"><span id="bestLabel">REKOR: 0 m</span><button id="btnMute">🔊</button></div>
+      <div id="loadErr" style="display:none">
+        ⚠ Script game tidak termuat sempurna.<br>
+        Pastikan modul JavaScript berhasil dimuat dengan benar.
+      </div>
+    </div>
+
+    <!-- Halaman 2: Hangar -->
+    <div id="pgHangar" class="mpage hidden">
+      <button id="btnBackH" class="btn ghost backBtn">◀ KEMBALI</button>
+      <div class="pgTitle">🛠 HANGAR</div>
+      <div class="pgSub">Pilih pesawat tempurmu</div>
+      <div class="shipRow" id="shipRow"></div>
+      <div id="shipPerk"></div>
+    </div>
+
+    <!-- Halaman 3: Tutorial -->
+    <div id="pgTut" class="mpage hidden">
+      <button id="btnBackT" class="btn ghost backBtn">◀ KEMBALI</button>
+      <div class="pgTitle">📖 TUTORIAL</div>
+      <div class="pgSub">Kendali & panduan misi</div>
+      <div class="secTitle">— KENDALI SENTUH —</div>
+      <div class="cards">
+        <div class="card"><span class="key">◀</span><b>JEMPOL KIRI</b><i>Tahan — geser ke kiri<br>Ketuk cepat — dodge kiri</i></div>
+        <div class="card mid"><span class="key">▲⚡</span><b>ZONA TENGAH</b><i>Tahan = dorong lebih cepat<br>Ketuk 2× cepat = BOOST</i></div>
+        <div class="card"><span class="key">▶</span><b>JEMPOL KANAN</b><i>Tahan — geser ke kanan<br>Ketuk cepat — dodge kanan</i></div>
+      </div>
+      <div class="kb">⌨ &nbsp;←/→ geser · ↑ dorong · SPASI boost · P jeda · pesawat selalu naik, tidak bisa mundur</div>
+      <div class="secTitle">— POWER-UP —</div>
+      <div class="legend">
+        <div class="lgItem"><span class="ic" style="color:#5eeaff">⚡</span><span><b>Energi</b> — isi ulang tenaga boost (+32)</span></div>
+        <div class="lgItem"><span class="ic" style="color:#7dffcf">🛡</span><span><b>Perisai</b> — pulihkan 1 holo-ring</span></div>
+        <div class="lgItem"><span class="ic" style="color:#ffb454">⭐</span><span><b>Bintang</b> — bonus +150 skor</span></div>
+        <div class="lgItem"><span class="ic" style="color:#ff7ae0">🔫</span><span><b>Laser</b> — warna = jenis laser; tembak otomatis 8 detik</span></div>
+      </div>
+      <div class="secTitle">— JENIS LASER —</div>
+      <div class="legend">
+        <div class="lgItem"><span class="ic" style="color:#ff7ae0">▮</span><span><b>PULSE</b> — 1 tembakan seimbang</span></div>
+        <div class="lgItem"><span class="ic" style="color:#5eeaff">▮▮</span><span><b>TWIN</b> — 2 tembakan paralel, cepat</span></div>
+        <div class="lgItem"><span class="ic" style="color:#ffb454">▮▮▮</span><span><b>SPREAD</b> — 3 tembakan melebar</span></div>
+        <div class="lgItem"><span class="ic" style="color:#8dff5a">▮</span><span><b>PLASMA</b> — tebal, damage 3×, lebih lambat</span></div>
+      </div>
+      <div class="secTitle">— BAHAYA —</div>
+      <div class="legend">
+        <div class="lgItem"><span class="ic">🪨</span><span><b>Asteroid</b> — hancurkan lewat BOOST atau laser</span></div>
+        <div class="lgItem"><span class="ic">💣</span><span><b>Ranjau</b> — meledak bila didekati; picu dari jauh dengan laser</span></div>
+        <div class="lgItem"><span class="ic">🛰</span><span><b>Puing</b> — balok berputar; laser butuh 2 tembakan</span></div>
+        <div class="lgItem"><span class="ic">🔦</span><span><b>Gerbang laser</b> — lewati celahnya saat berkas merah menyala</span></div>
+        <div class="lgItem"><span class="ic">🪐</span><span><b>Planet</b> — gravitasi 360°; yang hijau ☢ memancarkan radiasi</span></div>
+        <div class="lgItem"><span class="ic">🕳</span><span><b>Lubang hitam</b> — sedotan ekstrem; tahan dorong + BOOST untuk lolos</span></div>
+        <div class="lgItem"><span class="ic">☄</span><span><b>Komet</b> — perhatikan tanda ⚠ di tepi layar</span></div>
+        <div class="lgItem"><span class="ic">🗺</span><span><b>Radar</b> — peta kanan menampilkan semua bahaya di depan</span></div>
+      </div>
+      <div class="secTitle">— TIPS —</div>
+      <div class="lgItem wide"><span class="ic">💡</span><span>Laser dibelokkan gravitasi planet. Latar berubah tiap level. Menyusup dekat rintangan = <b>NEAR MISS</b> (skor + energi). Selesaikan <b>10 level (12.000 m)</b> untuk menang!</span></div>
+    </div>
+
+    <!-- Halaman 4: Profil -->
+    <div id="pgProfile" class="mpage hidden">
+      <button id="btnBackP" class="btn ghost backBtn">◀ KEMBALI</button>
+      <div class="pgTitle">👤 PROFIL</div>
+      <div class="pgSub">Identitas & konfigurasi pilot</div>
+      <div class="secTitle">— PILOT —</div>
+      <div class="profRow">
+        <label for="inName">NAMA PILOT</label>
+        <input id="inName" maxlength="12" autocomplete="off" spellcheck="false" placeholder="PILOT-01"/>
+      </div>
+      <div class="secTitle">— REKOR —</div>
+      <div class="stats">
+        <div><b id="pfAlt">0 m</b><span>KETINGGIAN TERTINGGI</span></div>
+        <div><b id="pfScore">0</b><span>SKOR TERBAIK</span></div>
+        <div><b id="pfMissions">0</b><span>MISI DITERBANGKAN</span></div>
+        <div><b id="pfSmash">0</b><span>RINTANGAN HANCUR</span></div>
+        <div><b id="pfNear">0</b><span>NEAR MISS</span></div>
+        <div><b id="pfShip">DRIFT-01</b><span>PESAWAT SAAT INI</span></div>
+      </div>
+      <div class="secTitle">— KONFIGURASI —</div>
+      <div class="cfgList">
+        <button class="cfgBtn" id="cfgSound"><span>🔊 EFEK SUARA</span><em id="cfgSoundV">AKTIF</em></button>
+        <button class="cfgBtn" id="cfgMusic"><span>🎵 MUSIK LATAR</span><em id="cfgMusicV">SYNTH DINAMIS</em></button>
+        <button class="cfgBtn" id="cfgMusicVol"><span>🎚 VOLUME MUSIK</span><em id="cfgMusicVolV">60%</em></button>
+        <button class="cfgBtn" id="cfgVib"><span>📳 GETARAN</span><em id="cfgVibV">AKTIF</em></button>
+        <button class="cfgBtn" id="cfgRadar"><span>🗺 RADAR</span><em id="cfgRadarV">AKTIF</em></button>
+        <button class="cfgBtn" id="cfgSensi"><span>🎯 SENSITIVITAS KENDALI</span><em id="cfgSensiV">NORMAL</em></button>
+      </div>
+      <button id="btnWipe" class="btn ghost danger">🗑 HAPUS SEMUA DATA</button>
+    </div>
+
+  </div>
+
+  <!-- Overlay Dialogs -->
+  <div id="pauseOv" class="overlay hidden">
+    <div class="panel">
+      <h2>MISI DIJEDA</h2>
+      <button id="btnResume" class="btn">LANJUT ▶</button>
+      <button id="btnRestart2" class="btn ghost">ULANGI 🚀</button>
+      <button id="btnMute2" class="btn ghost" style="padding:12px 24px">🔊 SUARA</button>
+    </div>
+  </div>
+
+  <div id="overOv" class="overlay hidden">
+    <div class="blackBoxPanel">
+      <div class="bbHeader">
+        <span class="bbTag">KOTAK HITAM KOKPIT // DEBRIEFING PENERBANGAN</span>
+        <span class="bbSerial" id="bbShipTag">DRIFT-01</span>
+      </div>
+
+      <div class="go-title">💥 MISI GAGAL</div>
+      <div id="goReason" class="go-reason">Hancur menghantam rintangan</div>
+
+      <!-- Visual Flight Progress vs Best Record -->
+      <div class="flightProgressBox">
+        <div class="fpLabels">
+          <span id="fpCurAlt">0 m</span>
+          <span id="fpTarget">REKOR: 0 m</span>
+        </div>
+        <div class="fpTrack">
+          <div class="fpFill" id="fpFill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Extended Telemetry Stats Grid -->
+      <div class="stats bbStats">
+        <div><b id="stAlt">0 m</b><span>KETINGGIAN</span></div>
+        <div><b id="stScore">0</b><span>SKOR AKHIR</span></div>
+        <div><b id="stMaxSpeed">0 m/s</b><span>KECEPATAN PUNCAK</span></div>
+        <div><b id="stDuration">0 d</b><span>DURASI TERBANG</span></div>
+        <div><b id="stSmash">0</b><span>RINTANGAN HANCUR</span></div>
+        <div><b id="stNear">0</b><span>NEAR MISS</span></div>
+      </div>
+
+      <div id="newBest" class="hidden">⭐ REKOR BARU TERCAPAI! ⭐</div>
+
+      <div class="instantHint">
+        <span>⌨ Tekan <b>SPASI</b> atau ketuk untuk terbang lagi</span>
+      </div>
+
+      <div class="menuBtns bbBtns">
+        <button id="btnRetry" class="btn">ULANGI MISI 🚀</button>
+        <button id="btnMenu" class="btn ghost menuBtn">KE MENU ◀</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="winOv" class="overlay hidden">
+    <div class="go-title gold">🏆 MISI SELESAI</div>
+    <div class="go-reason">SEMUA 10 LEVEL DITAKLUKKAN</div>
+    <div class="stats">
+      <div><b id="stAltW">0 m</b><span>KETINGGIAN</span></div>
+      <div><b id="stScoreW">0</b><span>SKOR</span></div>
+    </div>
+    <div id="newBestW" class="hidden">⭐ REKOR BARU! ⭐</div>
+    <button id="btnEndless" class="btn">LANJUT MODE BEBAS 🚀</button>
+    <button id="btnRetry2" class="btn ghost">ULANGI MISI</button>
+  </div>
+
+  <!-- Main JavaScript ES Module -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
