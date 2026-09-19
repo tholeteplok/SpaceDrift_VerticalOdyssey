@@ -111,17 +111,14 @@
 
     <!-- Halaman 2: Hangar -->
     <div id="pgHangar" class="mpage hidden">
-      <button id="btnBackH" class="btn ghost backBtn">◀ KEMBALI</button>
       <div class="pgTitle">🛠 HANGAR</div>
       <div class="pgSub">Pilih pesawat tempurmu</div>
       <div class="shipRow" id="shipRow"></div>
       <div id="shipPerk"></div>
-      <button id="btnBackH2" class="btn ghost backBtn subBackBtn">◀ KEMBALI</button>
     </div>
 
     <!-- Halaman 3: Tutorial -->
     <div id="pgTut" class="mpage hidden">
-      <button id="btnBackT" class="btn ghost backBtn">◀ KEMBALI</button>
       <div class="pgTitle">📖 TUTORIAL</div>
       <div class="pgSub">Kendali & panduan misi</div>
       <div class="secTitle">— KENDALI SENTUH —</div>
@@ -158,12 +155,10 @@
       </div>
       <div class="secTitle">— TIPS —</div>
       <div class="lgItem wide"><span class="ic">💡</span><span>Laser dibelokkan gravitasi planet. Latar berubah tiap level. Menyusup dekat rintangan = <b>NEAR MISS</b> (skor + energi). Selesaikan <b>10 level (12.000 m)</b> untuk menang!</span></div>
-      <button id="btnBackT2" class="btn ghost backBtn subBackBtn">◀ KEMBALI</button>
     </div>
 
     <!-- Halaman 4: Profil -->
     <div id="pgProfile" class="mpage hidden">
-      <button id="btnBackP" class="btn ghost backBtn">◀ KEMBALI</button>
       <div class="pgTitle">👤 PROFIL</div>
       <div class="pgSub">Identitas & konfigurasi pilot</div>
       <div class="secTitle">— PILOT —</div>
@@ -190,8 +185,13 @@
         <button class="cfgBtn" id="cfgSensi"><span>🎯 SENSITIVITAS KENDALI</span><em id="cfgSensiV">NORMAL</em></button>
       </div>
       <button id="btnWipe" class="btn ghost danger">🗑 HAPUS SEMUA DATA</button>
-      <button id="btnBackP2" class="btn ghost backBtn subBackBtn">◀ KEMBALI</button>
     </div>
+
+    <!-- Floating Fixed Back Button (Thumb-Friendly, Fixed Bottom-Left) -->
+    <button id="floatingBackBtn" class="floatingBackBtn hidden" aria-label="Kembali ke Menu Utama">
+      <span class="fbIcon">◀</span>
+      <span class="fbText">KEMBALI</span>
+    </button>
 
   </div>
 

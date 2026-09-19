@@ -5,10 +5,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: clamp(9px, 2.2vh, 20px);
-  padding: calc(18px + env(safe-area-inset-top)) 24px calc(20px + env(safe-area-inset-bottom));
+  padding: max(28px, calc(16px + env(safe-area-inset-top))) 20px max(32px, calc(24px + env(safe-area-inset-bottom)));
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
   background: radial-gradient(ellipse at 50% 30%, rgba(6, 14, 32, 0.55), rgba(2, 4, 12, 0.88) 78%);
 }
@@ -19,7 +20,15 @@
   align-items: center;
   gap: clamp(9px, 2vh, 18px);
   width: 100%;
-  margin: auto;
+  margin: 0 auto;
+  padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+}
+
+#pgMain {
+  margin: auto 0;
+  padding-bottom: 0;
+  min-height: calc(100% - 20px);
+  justify-content: center;
 }
 
 .pgTitle {
@@ -764,4 +773,54 @@
   letter-spacing: 0.2em;
   border-color: rgba(94, 234, 255, 0.35);
 }
+
+/* Floating Fixed Back Button (Sci-Fi Capsule, Fixed Bottom-Left) */
+.floatingBackBtn {
+  position: fixed;
+  left: calc(18px + env(safe-area-inset-left, 0px));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 99;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px 11px 16px;
+  background: rgba(4, 10, 24, 0.88);
+  border: 1.5px solid rgba(94, 234, 255, 0.45);
+  border-radius: 28px;
+  color: #fff;
+  font: 700 0.76rem Orbitron, sans-serif;
+  letter-spacing: 0.16em;
+  text-shadow: 0 0 10px rgba(94, 234, 255, 0.5);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65), 0 0 14px rgba(94, 234, 255, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  touch-action: manipulation;
+  transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.25s ease;
+  transform: translateZ(0);
+}
+
+.floatingBackBtn:active {
+  transform: scale(0.94) translateZ(0);
+  border-color: var(--amber);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 180, 84, 0.5);
+}
+
+.floatingBackBtn .fbIcon {
+  font-size: 0.85rem;
+  color: var(--cyan);
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.floatingBackBtn:hover .fbIcon {
+  transform: translateX(-2px);
+}
+
+.floatingBackBtn.hidden {
+  display: none !important;
+}
+
 

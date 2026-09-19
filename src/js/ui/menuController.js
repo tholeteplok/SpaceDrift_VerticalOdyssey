@@ -21,6 +21,7 @@ export function createMenuController(profileController) {
   const shipRow = $('shipRow');
   const shipPerk = $('shipPerk');
   const bestLabel = $('bestLabel');
+  const floatingBackBtn = $('floatingBackBtn');
 
   let activePage = 'pgMain';
 
@@ -34,6 +35,7 @@ export function createMenuController(profileController) {
     show($('pgHangar'), id === 'pgHangar');
     show($('pgTut'), id === 'pgTut');
     show($('pgProfile'), id === 'pgProfile');
+    show(floatingBackBtn, id !== 'pgMain');
     if (menuEl) menuEl.scrollTop = 0;
     if (id === 'pgProfile' && profileController) {
       profileController.refreshProfile();
@@ -151,12 +153,7 @@ export function createMenuController(profileController) {
     bindTap($('btnHangar'), () => showPage('pgHangar'));
     bindTap($('btnTut'), () => showPage('pgTut'));
     bindTap($('btnProfile'), () => showPage('pgProfile'));
-    bindTap($('btnBackH'), () => showPage('pgMain'));
-    bindTap($('btnBackH2'), () => showPage('pgMain'));
-    bindTap($('btnBackT'), () => showPage('pgMain'));
-    bindTap($('btnBackT2'), () => showPage('pgMain'));
-    bindTap($('btnBackP'), () => showPage('pgMain'));
-    bindTap($('btnBackP2'), () => showPage('pgMain'));
+    bindTap(floatingBackBtn, () => showPage('pgMain'));
     bindTap($('btnRetry'), () => eventBus.emit('startGame'));
     bindTap($('btnRestart2'), () => eventBus.emit('startGame'));
     bindTap($('btnRetry2'), () => eventBus.emit('startGame'));
@@ -255,6 +252,7 @@ export function createMenuController(profileController) {
     show(overOv, false);
     show(winOv, false);
     show(pauseOv, false);
+    show(floatingBackBtn, false);
   }
 
   function showMenuOverlay() {
