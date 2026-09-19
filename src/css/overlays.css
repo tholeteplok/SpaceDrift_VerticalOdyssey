@@ -823,4 +823,9 @@
   display: none !important;
 }
 
+.floatingBackBtn * {
+  pointer-events: none;
+}
+
+
 

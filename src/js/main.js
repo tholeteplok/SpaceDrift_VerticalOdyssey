@@ -533,9 +533,9 @@ window.__gameReady = true;
 
 // Smart Back Navigation System (Android Native & Web Popstate Bridge)
 window.__handleBackPress = () => {
-  // 1. If pause menu is open -> unpause / resume
+  // 1. If pause menu is open -> return to main menu (Option A)
   if (G.state === 'pause') {
-    togglePause();
+    toMenu();
     return 'handled';
   }
   // 2. If game over or win screen is open -> return to menu

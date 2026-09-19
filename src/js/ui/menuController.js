@@ -24,12 +24,14 @@ export function createMenuController(profileController) {
   const floatingBackBtn = $('floatingBackBtn');
 
   let activePage = 'pgMain';
+  let lastPageSwitchTime = 0;
 
   function show(el, on) {
     if (el) el.classList.toggle('hidden', !on);
   }
 
   function showPage(id, silent = false) {
+    lastPageSwitchTime = performance.now();
     activePage = id;
     show($('pgMain'), id === 'pgMain');
     show($('pgHangar'), id === 'pgHangar');
@@ -135,8 +137,9 @@ export function createMenuController(profileController) {
     let lastT = 0;
     const h = e => {
       if (e.cancelable) e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
       const n = performance.now();
-      if (n - lastT < 400) return;
+      if (n - lastT < 350) return;
       lastT = n;
       try {
         fn();
@@ -160,6 +163,7 @@ export function createMenuController(profileController) {
     bindTap($('btnMenu'), () => eventBus.emit('toMenu'));
     bindTap($('btnPause'), () => eventBus.emit('togglePause'));
     bindTap($('btnResume'), () => eventBus.emit('togglePause'));
+    bindTap($('btnPauseMenu'), () => eventBus.emit('toMenu'));
     bindTap($('btnEndless'), () => {
       if (G.state === 'win') {
         G.state = 'play';
@@ -171,9 +175,14 @@ export function createMenuController(profileController) {
 
     if (menuEl) {
       menuEl.addEventListener('pointerdown', e => {
-        if (e.target && e.target.tagName === 'BUTTON') return;
-        if (e.target && e.target.tagName === 'INPUT') return;
-        if (e.target && e.target.closest && e.target.closest('.shipCard')) return;
+        // Prevent accidental start if page was just switched
+        if (performance.now() - lastPageSwitchTime < 380) return;
+        if (e.target && e.target.closest && (
+          e.target.closest('button') ||
+          e.target.closest('input') ||
+          e.target.closest('.shipCard') ||
+          e.target.closest('.floatingBackBtn')
+        )) return;
         if ($('pgMain').classList.contains('hidden')) return;
         try {
           eventBus.emit('startGame');
